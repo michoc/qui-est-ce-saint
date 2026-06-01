@@ -545,7 +545,8 @@
           <option value="5">5</option>
           <option value="10" selected>10</option>
           <option value="15">15</option>
-          <option value="20">Tous</option>
+          <option value="20">20</option>
+          <option value="all">Tous</option>
         </select>
       </div>
 
@@ -636,8 +637,10 @@
 
 <script>
 const SAINTS = [
+  // ── HOMMES ──────────────────────────────────────────────
   {
     name: "Saint Sébastien",
+    gender: "male",
     hint: "Jeune homme nu, le corps transpercé de nombreuses flèches, attaché à un arbre ou un poteau. Soldats armés autour de lui.",
     story: "Officier de la garde impériale romaine, martyrisé sous Dioclétien (vers 288) pour avoir converti des prisonniers au christianisme. Laissé pour mort, il survécut à ses flèches avant d'être achevé à coups de massue. Patron des soldats et invoqué contre la peste.",
     feast: "Fête le 20 janvier",
@@ -646,25 +649,8 @@ const SAINTS = [
     aliases: ["sébastien", "sebastien", "saint sébastien", "saint sebastien"]
   },
   {
-    name: "Sainte Cécile",
-    hint: "Jeune femme entourée d'instruments de musique — orgue, luth, viole. Son regard est souvent levé vers le ciel, dans l'extase du chant.",
-    story: "Noble romaine du IIIe siècle, martyrisée à Syracuse. Lors de ses noces, elle entendait en son cœur la musique des anges. Patronne des musiciens, compositeurs et chanteurs.",
-    feast: "Fête le 22 novembre",
-    artwork: "Raphaël, 1514–1516 — Pinacoteca Nazionale, Bologne",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Raphael_St_Cecilia.jpg/500px-Raphael_St_Cecilia.jpg",
-    aliases: ["cécile", "cecile", "sainte cécile", "sainte cecile"]
-  },
-  {
-    name: "Sainte Agnès",
-    hint: "Jeune vierge tenant un agneau dans ses bras ou à ses côtés. Souvent couronnée de fleurs et portant une palme du martyre.",
-    story: "Jeune romaine de 12 ans martyrisée vers 304. Elle refusa d'épouser le fils d'un préfet romain, affirmant que le Christ était son époux. Son nom latin (Agnus = agneau) inspira cet attribut. Patronne des jeunes filles et de la pureté.",
-    feast: "Fête le 21 janvier",
-    artwork: "Vicente Macip, vers 1540 — Musée du Prado, Madrid",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Macip-santa_ines.jpg/500px-Macip-santa_ines.jpg",
-    aliases: ["agnès", "agnes", "sainte agnès", "sainte agnes"]
-  },
-  {
     name: "Saint Georges",
+    gender: "male",
     hint: "Chevalier en armure terrassant un dragon avec sa lance. Une princesse en robe blanche est souvent représentée en retrait.",
     story: "Soldat romain de Cappadoce martyrisé vers 303. La légende du dragon, popularisée par la Légende dorée (XIIIe s.), en fait le libérateur d'une cité terrorisée par un monstre. Patron de l'Angleterre, de la chevalerie et des soldats.",
     feast: "Fête le 23 avril",
@@ -674,6 +660,7 @@ const SAINTS = [
   },
   {
     name: "Saint Jérôme",
+    gender: "male",
     hint: "Vieillard barbu dans un désert ou une grotte, souvent à demi nu. Un lion docile est à ses côtés, et un crâne lui rappelle la mort.",
     story: "Père de l'Église (347–420), auteur de la Vulgate, traduction latine de la Bible. Il vécut comme ermite en Syrie et en Palestine. La légende dit qu'il soigna un lion blessé qui devint son fidèle compagnon. Patron des traducteurs et des bibliothécaires.",
     feast: "Fête le 30 septembre",
@@ -682,16 +669,8 @@ const SAINTS = [
     aliases: ["jérôme", "jerome", "saint jérôme", "saint jerome"]
   },
   {
-    name: "Sainte Marie-Madeleine",
-    hint: "Femme aux longs cheveux dénoués, tenant un vase d'onguent (alabastre). Elle pleure souvent au pied de la Croix ou dans un cadre de pénitente.",
-    story: "Figure centrale des Évangiles, présente à la Crucifixion et première témoin de la Résurrection. Sa longue chevelure et son pot d'huile parfumée restent ses attributs immuables.",
-    feast: "Fête le 22 juillet",
-    artwork: "Georges de La Tour, vers 1640 — Metropolitan Museum, New York",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Georges_de_La_Tour_006.jpg/500px-Georges_de_La_Tour_006.jpg",
-    aliases: ["marie-madeleine", "marie madeleine", "madeleine", "sainte marie-madeleine", "sainte madeleine"]
-  },
-  {
     name: "Saint Jean-Baptiste",
+    gender: "male",
     hint: "Ascète vêtu d'une peau de chameau, tenant une croix de roseau et un agneau ou un livre. Il montre souvent du doigt.",
     story: "Le précurseur du Christ, qui le baptisa dans le Jourdain. Fils d'Élisabeth et de Zacharie, il vécut en ermite dans le désert de Judée. Décapité sur ordre d'Hérode Antipas à la demande de Salomé.",
     feast: "Fête le 24 juin",
@@ -701,6 +680,7 @@ const SAINTS = [
   },
   {
     name: "Saint Pierre",
+    gender: "male",
     hint: "Homme d'âge mûr aux cheveux courts et bouclés, portant deux clefs (une d'or, une d'argent). Chef des apôtres.",
     story: "Pêcheur de Galilée appelé Simon, renommé Pierre (Petros = le roc) par Jésus. Martyrisé à Rome vers 64, il aurait demandé à être crucifié la tête en bas, ne se jugeant pas digne de mourir comme le Christ. Ses deux clefs symbolisent les pouvoirs spirituel et terrestre.",
     feast: "Fête le 29 juin",
@@ -709,43 +689,18 @@ const SAINTS = [
     aliases: ["pierre", "saint pierre", "peter", "saint peter"]
   },
   {
-    name: "Sainte Catherine d'Alexandrie",
-    hint: "Jeune femme noble tenant une épée et une roue brisée — instrument de son supplice. Couronne royale sur la tête.",
-    story: "Noble d'Alexandrie (IVe s.) qui aurait converti 50 philosophes envoyés par Maxence pour la faire renoncer à sa foi. Condamnée à la roue, qui se brisa miraculeusement, elle fut décapitée. Patronne des philosophes et des étudiants.",
-    feast: "Fête le 25 novembre",
-    artwork: "Caravage, vers 1598 — Museo Thyssen-Bornemisza, Madrid",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Saint_Catherine_of_Alexandria_%28Caravaggio%29.jpg/500px-Saint_Catherine_of_Alexandria_%28Caravaggio%29.jpg",
-    aliases: ["catherine", "catherine d'alexandrie", "sainte catherine", "sainte catherine d'alexandrie"]
-  },
-  {
-    name: "Sainte Barbe",
-    hint: "Jeune femme élégante tenant une palme et portant une tour à trois fenêtres (symbole trinitaire) — souvent derrière elle ou à ses pieds.",
-    story: "Vierge martyre du IIIe s. dont le père la fit décapiter de sa propre main après l'avoir enfermée dans une tour. La tour à trois fenêtres rappelle le mystère de la Trinité. Patronne des artilleurs et protectrice contre la foudre.",
-    feast: "Fête le 4 décembre",
-    artwork: "Jan van Eyck, 1437 — KMSKA, Anvers",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Saint_Barbara_of_Nicodemia_-_Jan_van_Eyck_-_1437.jpg/500px-Saint_Barbara_of_Nicodemia_-_Jan_van_Eyck_-_1437.jpg",
-    aliases: ["barbe", "sainte barbe", "barbara", "sainte barbara"]
-  },
-  {
-    name: "Sainte Lucie",
-    hint: "Jeune martyre tenant une palme et un plateau sur lequel reposent deux yeux. Parfois une lampe ou un livre.",
-    story: "Jeune sicilienne martyrisée sous Dioclétien (304). Selon la légende, elle s'arracha les yeux pour les offrir à un prétendant qui l'admirait pour son regard. Ses yeux lui furent miraculeusement rendus. Patronne des aveugles.",
-    feast: "Fête le 13 décembre",
-    artwork: "Domenico Veneziano, vers 1445 — Galerie des Offices, Florence",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Domenico_Veneziano_-_Pala_di_Santa_Lucia_dei_Magnoli_-_Google_Art_Project.jpg/500px-Domenico_Veneziano_-_Pala_di_Santa_Lucia_dei_Magnoli_-_Google_Art_Project.jpg",
-    aliases: ["lucie", "lucia", "sainte lucie", "sainte lucia", "lucy"]
-  },
-  {
     name: "Saint François d'Assise",
+    gender: "male",
     hint: "Moine en habit brun grossier, portant les stigmates (plaies du Christ). Il est souvent entouré d'oiseaux et tient une croix ou un livre.",
     story: "Fils d'un riche marchand d'Assise (1181–1226), il abandonna tout pour vivre en pauvreté absolue. En 1224, il reçut les stigmates — les cinq plaies du Christ — sur son corps. Fondateur de l'ordre franciscain. Patron des animaux.",
     feast: "Fête le 4 octobre",
     artwork: "El Greco, vers 1595 — Musée du Prado, Madrid",
     image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/El_Greco_-_Saint_Francis_Receiving_the_Stigmata_-_Google_Art_Project.jpg/500px-El_Greco_-_Saint_Francis_Receiving_the_Stigmata_-_Google_Art_Project.jpg",
-    aliases: ["françois", "francois", "francis", "saint françois", "saint francois", "saint francis", "François d'assise"]
+    aliases: ["français", "francois", "francis", "saint français", "saint francois", "saint francis", "François d'assise"]
   },
   {
     name: "Saint Laurent",
+    gender: "male",
     hint: "Diacre vêtu d'une dalmatique, portant un gril (grille de métal) — instrument de son martyre. Parfois une palme ou une aumônière.",
     story: "Diacre de Rome martyrisé en 258. Chargé des trésors de l'Église, il les distribua aux pauvres avant d'être arrêté. Condamné à être brûlé vif sur un gril, il aurait dit : « Retournez-moi, je suis cuit d'un côté. » Patron des bibliothécaires.",
     feast: "Fête le 10 août",
@@ -755,6 +710,7 @@ const SAINTS = [
   },
   {
     name: "Saint Nicolas",
+    gender: "male",
     hint: "Évêque mitré en habits liturgiques, portant trois boules d'or (ou trois bourses) et parfois un tonneau contenant trois enfants.",
     story: "Évêque de Myre (IVe s.), célèbre pour sa générosité. Il aurait sauvé trois jeunes filles de la misère en leur offrant une dot (les trois bourses d'or). Devenu le Père Noël en traversant l'Atlantique. Patron des enfants et des marins.",
     feast: "Fête le 6 décembre",
@@ -764,6 +720,7 @@ const SAINTS = [
   },
   {
     name: "Saint Christophe",
+    gender: "male",
     hint: "Géant traversant un fleuve à pied, portant sur ses épaules l'enfant Jésus qui tient un globe terrestre. Un bâton de palmier à la main.",
     story: "Selon la légende, ce géant cherchait le plus puissant maître à servir. Un enfant qu'il portait devint de plus en plus lourd — c'était le Christ portant le poids du monde. Son nom signifie « porte-Christ ». Patron des voyageurs.",
     feast: "Fête le 25 juillet",
@@ -773,6 +730,7 @@ const SAINTS = [
   },
   {
     name: "Saint Antoine de Padoue",
+    gender: "male",
     hint: "Moine franciscain portant dans ses bras l'Enfant Jésus et un lys blanc. Livre ouvert dans l'autre main.",
     story: "Franciscain portugais (1195–1231), docteur de l'Église réputé pour ses miracles. La vision de l'Enfant Jésus lui apparaissant dans ses bras est l'image la plus populaire. Il convertit un mulet hérétique qui s'inclina devant l'Eucharistie. Patron des objets perdus.",
     feast: "Fête le 13 juin",
@@ -782,6 +740,7 @@ const SAINTS = [
   },
   {
     name: "Saint André",
+    gender: "male",
     hint: "Vieil apôtre aux cheveux blancs enlacé à une grande croix en X (croix de Saint-André / croix décussée).",
     story: "Frère de Pierre, pêcheur du lac de Tibériade, premier appelé par Jésus. Martyrisé à Patras (Grèce) sur une croix en X — il aurait demandé cette croix différente pour ne pas être comparé au Christ. Patron de l'Écosse et de la Russie.",
     feast: "Fête le 30 novembre",
@@ -791,6 +750,7 @@ const SAINTS = [
   },
   {
     name: "Saint Barthélemy",
+    gender: "male",
     hint: "Apôtre tenant sa propre peau écorchée sur le bras ou à la main, ainsi qu'un couteau de boucher.",
     story: "Un des douze apôtres, martyrisé en Arménie où il aurait été écorché vif puis décapité. Michel-Ange s'est représenté lui-même dans la peau flasque que tient saint Barthélemy dans le Jugement Dernier de la Sixtine. Patron des bouchers.",
     feast: "Fête le 24 août",
@@ -799,7 +759,189 @@ const SAINTS = [
     aliases: ["barthélemy", "barthelemy", "bartholomew", "saint barthélemy", "saint barthelemy"]
   },
   {
+    name: "Saint Thomas",
+    gender: "male",
+    hint: "Apôtre portant une équerre d'architecte ou introduisant son doigt dans la plaie du Christ ressuscité.",
+    story: "L'apôtre du doute : refusant de croire à la Résurrection, il demanda à toucher les plaies du Christ. La scène de l'« Incrédulité de Saint Thomas » est une des plus représentées de l'art baroque. Il aurait évangélisé l'Inde. Patron des architectes.",
+    feast: "Fête le 3 juillet",
+    artwork: "Caravage, 1601–1602 — Sanssouci, Potsdam",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Caravaggio_-_The_Incredulity_of_Saint_Thomas.jpg/500px-Caravaggio_-_The_Incredulity_of_Saint_Thomas.jpg",
+    aliases: ["thomas", "saint thomas"]
+  },
+  {
+    name: "Saint Paul",
+    gender: "male",
+    hint: "Homme chauve à la longue barbe noire, tenant une épée (instrument de son martyre) et un livre ou rouleau représentant ses épîtres.",
+    story: "Persécuteur des premiers chrétiens, foudroyé sur le chemin de Damas et converti. Apôtre des Gentils, il parcourut la Méditerranée pour fonder des communautés chrétiennes. Décapité à Rome vers 64. Co-patron de Rome avec saint Pierre.",
+    feast: "Fête le 29 juin",
+    artwork: "Caravage, vers 1600 — Basilique Santa Maria del Popolo, Rome",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/The_Conversion_of_Saint_Paul-Caravaggio_%28c._1600-1%29.jpg/500px-The_Conversion_of_Saint_Paul-Caravaggio_%28c._1600-1%29.jpg",
+    aliases: ["paul", "saint paul"]
+  },
+  {
+    name: "Saint Michel",
+    gender: "male",
+    hint: "Archange en armure dorée, terrassant Satan ou un dragon sous ses pieds, tenant une épée flamboyante et parfois une balance pour peser les âmes.",
+    story: "Chef des armées célestes, l'ange guerrier par excellence. Protecteur d'Israël selon Daniel, il est invoqué contre le démon et guide les âmes vers le jugement. Son culte en Occident est lié au sanctuaire du Mont-Saint-Michel (708). Patron des soldats et des policiers.",
+    feast: "Fête le 29 septembre",
+    artwork: "Guido Reni, vers 1635 — Santa Maria della Concezione, Rome",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/GuidoReni_MichaelDefeatsSatan.jpg/500px-GuidoReni_MichaelDefeatsSatan.jpg",
+    aliases: ["michel", "michael", "saint michel", "archange michel"]
+  },
+  {
+    name: "Saint Jacques le Mineur",
+    gender: "male",
+    hint: "Apôtre tenant un foulon (bâton épais) — instrument de son martyre. Traits juvéniles, parfois une palme du martyre.",
+    story: "Cousin ou frère du Seigneur selon les traditions, premier évêque de Jérusalem surnommé « le Juste » pour sa piété. Précipité du haut du Temple, puis achevé à coups de foulon. Ne pas confondre avec Jacques le Majeur, patron de Compostelle.",
+    feast: "Fête le 3 mai",
+    artwork: "El Greco, vers 1610 — Google Art Project",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/El_Greco_-_Saint_James_the_Younger_-_Google_Art_Project.jpg/500px-El_Greco_-_Saint_James_the_Younger_-_Google_Art_Project.jpg",
+    aliases: ["jacques", "james", "saint jacques", "saint james", "jacques le mineur", "saint jacques le mineur"]
+  },
+  {
+    name: "Saint Roch",
+    gender: "male",
+    hint: "Pèlerin en habit de voyage montrant une plaie sur sa cuisse. Un chien lui apporte du pain. Bâton de pèlerin et chapeau à large bord.",
+    story: "Pèlerin français (XIVe s.) qui soignait les pestiférés en Italie avant d'être frappé lui-même. Retiré dans une forêt, un chien lui apportait chaque jour du pain dérobé à son maître. Guéri miraculeusement, il consacra sa vie aux malades. Patron des pestiférés.",
+    feast: "Fête le 16 août",
+    artwork: "Tintoret, vers 1549 — Scuola Grande di San Rocco, Venise",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/San_Rocco_Venezia_%28Interno%29_-_San_Rocco_colpito_dalla_peste_-_Tintoretto.jpg/500px-San_Rocco_Venezia_%28Interno%29_-_San_Rocco_colpito_dalla_peste_-_Tintoretto.jpg",
+    aliases: ["roch", "roque", "saint roch"]
+  },
+  {
+    name: "Saint Jean l'Évangéliste",
+    gender: "male",
+    hint: "Jeune homme imberbe — le plus jeune apôtre — tenant un calice d'où sort un serpent ou un dragon. Un aigle ailé à ses côtés.",
+    story: "Fils de Zébédée, « disciple bien-aimé » du Christ, présent à la Crucifixion. Auteur du quatrième Évangile, de l'Apocalypse et de trois épîtres. Son calice empoisonné devint inoffensif. Seul apôtre à mourir de vieillesse, à Éphèse.",
+    feast: "Fête le 27 décembre",
+    artwork: "El Greco, vers 1600 — Museo Nacional de Escultura, Valladolid",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/San_Juan_Evangelista%2C_de_El_Greco._%28Museo_Nacional_de_Escultura_de_Valladolid%29.JPG/500px-San_Juan_Evangelista%2C_de_El_Greco._%28Museo_Nacional_de_Escultura_de_Valladolid%29.JPG",
+    aliases: ["jean", "jean l'évangéliste", "saint jean", "saint jean l'évangéliste", "jean evangeliste"]
+  },
+  {
+    name: "Saint Matthieu",
+    gender: "male",
+    hint: "Apôtre et évangéliste tenant un livre ouvert, souvent assisté d'un ange qui guide sa plume. Anciennement publicain (collecteur d'impôts).",
+    story: "Collecteur d'impôts à Capharnaüm, appelé par Jésus. Auteur du premier Évangile. Son symbole est l'ange ou l'homme ailé, car son Évangile s'ouvre sur la généalogie humaine du Christ. Aurait évangélisé l'Éthiopie.",
+    feast: "Fête le 21 septembre",
+    artwork: "Caravage, 1602 — San Luigi dei Francesi, Rome",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/The_Inspiration_of_Saint_Matthew_by_Caravaggio.jpg/500px-The_Inspiration_of_Saint_Matthew_by_Caravaggio.jpg",
+    aliases: ["matthieu", "matthew", "saint matthieu", "saint matthew"]
+  },
+  {
+    name: "Saint Luc",
+    gender: "male",
+    hint: "Évangéliste représenté en peintre ou médecin, accompagné d'un bœuf ailé (son symbole). Parfois occupé à peindre la Vierge.",
+    story: "Médecin grec, compagnon de saint Paul, auteur du troisième Évangile et des Actes des Apôtres. La tradition en fait le premier portraitiste de la Vierge. Son bœuf ailé évoque le sacrifice du Temple mentionné au début de son Évangile.",
+    feast: "Fête le 18 octobre",
+    artwork: "El Greco, vers 1590 — Collection privée",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/El_greco%2C_un_evangelista%2C_1590_ca._02.JPG/500px-El_greco%2C_un_evangelista%2C_1590_ca._02.JPG",
+    aliases: ["luc", "luke", "saint luc", "saint luke"]
+  },
+  {
+    name: "Saint Joseph",
+    gender: "male",
+    hint: "Homme mûr portant un lys blanc (symbole de pureté) et une tige fleurie. Souvent représenté avec l'Enfant Jésus et des outils de charpentier.",
+    story: "Époux de la Vierge Marie et père adoptif du Christ. Charpentier de Nazareth, il protégea la Sainte Famille lors de la fuite en Égypte. Sa tige fleurie, surgissant miraculeusement lors du choix de l'époux de Marie, et son lys symbolisent sa chasteté.",
+    feast: "Fête le 19 mars",
+    artwork: "Bartolomé Esteban Murillo, vers 1670 — National Gallery of Ireland, Dublin",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Murillo_-_Saint_Joseph_and_the_Christ_Child%2C_ca._1670-75.jpg/500px-Murillo_-_Saint_Joseph_and_the_Christ_Child%2C_ca._1670-75.jpg",
+    aliases: ["joseph", "saint joseph"]
+  },
+  {
+    name: "Saint Dominique",
+    gender: "male",
+    hint: "Moine en habit blanc et noir (dominicain), tenant un lys et un livre. Une étoile sur le front. Un chien portant une torche à ses pieds.",
+    story: "Fondateur de l'ordre des Prêcheurs (Dominicains, 1216), né en Castille (1170–1221). Connu pour sa prédication contre l'hérésie cathare. La légende dit que sa mère rêva d'un chien portant une torche — image de la prédication enflammée de l'ordre.",
+    feast: "Fête le 8 août",
+    artwork: "El Greco, vers 1600 — Museum of Fine Arts, Boston",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/El_Greco%2C_St_Dominic_in_Prayer.JPG/500px-El_Greco%2C_St_Dominic_in_Prayer.JPG",
+    aliases: ["dominique", "dominic", "saint dominique", "saint dominic"]
+  },
+  {
+    name: "Saint Augustin",
+    gender: "male",
+    hint: "Évêque en habits pontificaux tenant un cœur enflammé transpercé d'une flèche et un livre de théologie.",
+    story: "Père et Docteur de l'Église (354–430), évêque d'Hippone. Ses Confessions racontent sa conversion après une jeunesse dissolue. Son cœur enflammé (Cor ardens) évoque son amour ardent de Dieu. Patron des théologiens.",
+    feast: "Fête le 28 août",
+    artwork: "Piero della Francesca, vers 1460 — Musée National d'Art Ancien, Lisbonne",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Piero_della_Francesca_-_Polyptych_of_St_Augustine_-_St_Augustine_-_WGA17456.jpg/500px-Piero_della_Francesca_-_Polyptych_of_St_Augustine_-_St_Augustine_-_WGA17456.jpg",
+    aliases: ["augustin", "augustine", "saint augustin", "saint augustine"]
+  },
+  {
+    name: "Saint Étienne",
+    gender: "male",
+    hint: "Jeune diacre en dalmatique portant des pierres sur le bras ou sur la tête — instruments de sa lapidation. Palme du martyre.",
+    story: "Premier martyr du christianisme (proto-martyr), lapidé à Jérusalem vers 36. Diacre de la communauté primitive, condamné pour blasphème. Il mourut en demandant le pardon pour ses bourreaux. Parmi les témoins : Saul de Tarse, le futur saint Paul.",
+    feast: "Fête le 26 décembre",
+    artwork: "Vittore Carpaccio, vers 1514 — Pinacoteca di Brera, Milan",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Sermon_of_Saint_Stephen_by_Carpaccio.jpg/500px-Sermon_of_Saint_Stephen_by_Carpaccio.jpg",
+    aliases: ["étienne", "etienne", "stephen", "saint étienne", "saint etienne", "saint stephen"]
+  },
+  // ── FEMMES ──────────────────────────────────────────────
+  {
+    name: "Sainte Cécile",
+    gender: "female",
+    hint: "Jeune femme entourée d'instruments de musique — orgue, luth, viole. Son regard est souvent levé vers le ciel, dans l'extase du chant.",
+    story: "Noble romaine du IIIe siècle, martyrisée à Syracuse. Lors de ses noces, elle entendait en son cœur la musique des anges. Patronne des musiciens, compositeurs et chanteurs.",
+    feast: "Fête le 22 novembre",
+    artwork: "Raphaël, 1514–1516 — Pinacoteca Nazionale, Bologne",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Raphael_St_Cecilia.jpg/500px-Raphael_St_Cecilia.jpg",
+    aliases: ["cécile", "cecile", "sainte cécile", "sainte cecile"]
+  },
+  {
+    name: "Sainte Agnès",
+    gender: "female",
+    hint: "Jeune vierge tenant un agneau dans ses bras ou à ses côtés. Souvent couronnée de fleurs et portant une palme du martyre.",
+    story: "Jeune romaine de 12 ans martyrisée vers 304. Elle refusa d'épouser le fils d'un préfet romain, affirmant que le Christ était son époux. Son nom latin (Agnus = agneau) inspira cet attribut. Patronne des jeunes filles et de la pureté.",
+    feast: "Fête le 21 janvier",
+    artwork: "Vicente Macip, vers 1540 — Musée du Prado, Madrid",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Macip-santa_ines.jpg/500px-Macip-santa_ines.jpg",
+    aliases: ["agnès", "agnes", "sainte agnès", "sainte agnes"]
+  },
+  {
+    name: "Sainte Marie-Madeleine",
+    gender: "female",
+    hint: "Femme aux longs cheveux dénoués, tenant un vase d'onguent (alabastre). Elle pleure souvent au pied de la Croix ou dans un cadre de pénitente.",
+    story: "Figure centrale des Évangiles, présente à la Crucifixion et première témoin de la Résurrection. Sa longue chevelure et son pot d'huile parfumée restent ses attributs immuables.",
+    feast: "Fête le 22 juillet",
+    artwork: "Georges de La Tour, vers 1640 — Metropolitan Museum, New York",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Georges_de_La_Tour_006.jpg/500px-Georges_de_La_Tour_006.jpg",
+    aliases: ["marie-madeleine", "marie madeleine", "madeleine", "sainte marie-madeleine", "sainte madeleine"]
+  },
+  {
+    name: "Sainte Catherine d'Alexandrie",
+    gender: "female",
+    hint: "Jeune femme noble tenant une épée et une roue brisée — instrument de son supplice. Couronne royale sur la tête.",
+    story: "Noble d'Alexandrie (IVe s.) qui aurait converti 50 philosophes envoyés par Maxence pour la faire renoncer à sa foi. Condamnée à la roue, qui se brisa miraculeusement, elle fut décapitée. Patronne des philosophes et des étudiants.",
+    feast: "Fête le 25 novembre",
+    artwork: "Caravage, vers 1598 — Museo Thyssen-Bornemisza, Madrid",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Saint_Catherine_of_Alexandria_%28Caravaggio%29.jpg/500px-Saint_Catherine_of_Alexandria_%28Caravaggio%29.jpg",
+    aliases: ["catherine", "catherine d'alexandrie", "sainte catherine", "sainte catherine d'alexandrie"]
+  },
+  {
+    name: "Sainte Barbe",
+    gender: "female",
+    hint: "Jeune femme élégante tenant une palme et portant une tour à trois fenêtres (symbole trinitaire) — souvent derrière elle ou à ses pieds.",
+    story: "Vierge martyre du IIIe s. dont le père la fit décapiter de sa propre main après l'avoir enfermée dans une tour. La tour à trois fenêtres rappelle le mystère de la Trinité. Patronne des artilleurs et protectrice contre la foudre.",
+    feast: "Fête le 4 décembre",
+    artwork: "Jan van Eyck, 1437 — KMSKA, Anvers",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Saint_Barbara_of_Nicodemia_-_Jan_van_Eyck_-_1437.jpg/500px-Saint_Barbara_of_Nicodemia_-_Jan_van_Eyck_-_1437.jpg",
+    aliases: ["barbe", "sainte barbe", "barbara", "sainte barbara"]
+  },
+  {
+    name: "Sainte Lucie",
+    gender: "female",
+    hint: "Jeune martyre tenant une palme et un plateau sur lequel reposent deux yeux. Parfois une lampe ou un livre.",
+    story: "Jeune sicilienne martyrisée sous Dioclétien (304). Selon la légende, elle s'arracha les yeux pour les offrir à un prétendant qui l'admirait pour son regard. Ses yeux lui furent miraculeusement rendus. Patronne des aveugles.",
+    feast: "Fête le 13 décembre",
+    artwork: "Domenico Veneziano, vers 1445 — Galerie des Offices, Florence",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Domenico_Veneziano_-_Pala_di_Santa_Lucia_dei_Magnoli_-_Google_Art_Project.jpg/500px-Domenico_Veneziano_-_Pala_di_Santa_Lucia_dei_Magnoli_-_Google_Art_Project.jpg",
+    aliases: ["lucie", "lucia", "sainte lucie", "sainte lucia", "lucy"]
+  },
+  {
     name: "Sainte Thérèse d'Avila",
+    gender: "female",
     hint: "Carmélite en habit brun et blanc, souvent en extase, traversée d'une flèche de feu envoyée par un ange. Plume et livre à ses côtés.",
     story: "Mystique espagnole (1515–1582), réformatrice du Carmel. Ses écrits décrivent ses extases spirituelles, notamment la transverbération — un ange lui transperçant le cœur d'une flèche enflammée. Docteure de l'Église.",
     feast: "Fête le 15 octobre",
@@ -808,13 +950,64 @@ const SAINTS = [
     aliases: ["thérèse", "therese", "thérèse d'avila", "therese d'avila", "sainte thérèse", "sainte therese"]
   },
   {
-    name: "Saint Thomas",
-    hint: "Apôtre portant une équerre d'architecte ou introduisant son doigt dans la plaie du Christ ressuscité.",
-    story: "L'apôtre du doute : refusant de croire à la Résurrection, il demanda à toucher les plaies du Christ. La scène de l'« Incrédulité de Saint Thomas » est une des plus représentées de l'art baroque. Il aurait évangélisé l'Inde. Patron des architectes.",
-    feast: "Fête le 3 juillet",
-    artwork: "Caravage, 1601–1602 — Sanssouci, Potsdam",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Caravaggio_-_The_Incredulity_of_Saint_Thomas.jpg/500px-Caravaggio_-_The_Incredulity_of_Saint_Thomas.jpg",
-    aliases: ["thomas", "saint thomas"]
+    name: "Sainte Véronique",
+    gender: "female",
+    hint: "Femme tenant un voile blanc sur lequel est imprimé le visage du Christ — la Sainte Face ou Vera Icon.",
+    story: "Selon la tradition, cette femme de Jérusalem essuya le visage du Christ sur le chemin de la croix. Son voile garda miraculeusement l'empreinte de ce visage (vera icon = vraie image). Son nom même dériverait de cette relique. Elle symbolise la dévotion à la Passion.",
+    feast: "Fête le 12 juillet",
+    artwork: "Francisco de Zurbarán, vers 1635 — Nationalmuseum, Stockholm",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Francisco_de_Zurbar%C3%A1n_011.jpg/500px-Francisco_de_Zurbar%C3%A1n_011.jpg",
+    aliases: ["véronique", "veronique", "sainte véronique", "sainte veronique", "veronica"]
+  },
+  {
+    name: "Sainte Marguerite",
+    gender: "female",
+    hint: "Jeune vierge sortant du ventre d'un dragon ou terrassant un dragon sous ses pieds. Couronne de martyre et palme.",
+    story: "Vierge d'Antioche martyre, elle aurait été avalée vivante par un dragon dont elle brisa le ventre avec sa croix. Cette légende populaire en fit la patronne des femmes en couches. L'une des Quatorze Auxiliaires, très vénérée au Moyen Âge.",
+    feast: "Fête le 20 juillet",
+    artwork: "Titien, vers 1565 — Musée du Prado, Madrid",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Tiziano%2C_santa_margherita%2C_1565-70_ca._03.jpg/500px-Tiziano%2C_santa_margherita%2C_1565-70_ca._03.jpg",
+    aliases: ["marguerite", "margaret", "sainte marguerite", "sainte margaret"]
+  },
+  {
+    name: "Sainte Élisabeth de Hongrie",
+    gender: "female",
+    hint: "Reine ou princesse en habits royaux portant une corbeille de roses, ou soignant des pauvres et des malades.",
+    story: "Princesse hongroise (1207–1231), épouse du landgrave de Thuringe. La légende des roses raconte que son mari la surprit portant du pain aux pauvres : les pains se transformèrent miraculeusement en fleurs. Tertiaire franciscaine, patronne des œuvres de charité.",
+    feast: "Fête le 17 novembre",
+    artwork: "Bartolomé Esteban Murillo, vers 1672 — Musée des Beaux-Arts, Séville",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Santa_Isabel_de_Hungr%C3%ADa_curando_ti%C3%B1osos..jpg/500px-Santa_Isabel_de_Hungr%C3%ADa_curando_ti%C3%B1osos..jpg",
+    aliases: ["élisabeth", "elisabeth", "élisabeth de hongrie", "sainte élisabeth", "sainte elisabeth"]
+  },
+  {
+    name: "Sainte Rose de Lima",
+    gender: "female",
+    hint: "Religieuse dominicaine portant une couronne d'épines (imitant le Christ) et des roses. Parfois l'Enfant Jésus dans les bras.",
+    story: "Première sainte née en Amérique (Lima, 1586–1617). Tertiaire dominicaine, elle porta une couronne d'épines et pratiqua d'austères pénitences par amour mystique. Patronne de l'Amérique latine, du Pérou et des fleuristes.",
+    feast: "Fête le 23 août",
+    artwork: "Bartolomé Esteban Murillo, vers 1670 — Google Art Project",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Bartolom%C3%A9_Esteban_Murillo_-_Saint_Rose_of_Lima_-_Google_Art_Project.jpg/500px-Bartolom%C3%A9_Esteban_Murillo_-_Saint_Rose_of_Lima_-_Google_Art_Project.jpg",
+    aliases: ["rose", "rose de lima", "sainte rose", "sainte rose de lima"]
+  },
+  {
+    name: "Sainte Apolline",
+    gender: "female",
+    hint: "Jeune martyre tenant une palme et une pince (tenaille) serrant une dent arrachée — instrument de son supplice.",
+    story: "Vierge d'Alexandrie martyrisée en 249 lors des persécutions sous Dèce. On lui arracha toutes les dents avant de la jeter dans le feu. Selon la légende, elle y sauta d'elle-même. Représentée avec une pince tenant une dent, elle est la patronne des dentistes.",
+    feast: "Fête le 9 février",
+    artwork: "Francisco de Zurbarán, vers 1636 — Musée du Louvre, Paris",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Santa_Apolonia_por_Francisco_de_Zurbar%C3%A1n_%28medio_punto%29.jpg/500px-Santa_Apolonia_por_Francisco_de_Zurbar%C3%A1n_%28medio_punto%29.jpg",
+    aliases: ["apolline", "apollonia", "sainte apolline", "sainte apollonia"]
+  },
+  {
+    name: "Sainte Claire",
+    gender: "female",
+    hint: "Religieuse franciscaine en habit gris ou brun, tenant un ostensoir ou une custode avec laquelle elle repoussa des envahisseurs.",
+    story: "Fondatrice des Clarisses (1194–1253), amie et disciple de François d'Assise. Selon la légende, elle tint tête aux soldats sarrasins en leur présentant l'ostensoir, qui les mit en fuite. Son nom (Clara = lumière) et sa custode sont ses attributs iconographiques.",
+    feast: "Fête le 11 août",
+    artwork: "Cavalier d'Arpin, vers 1595 — WGA",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Cavalier_d%27Arpino_-_St_Clare_with_the_Scene_of_the_Siege_of_Assisi_-_WGA04703.jpg/500px-Cavalier_d%27Arpino_-_St_Clare_with_the_Scene_of_the_Siege_of_Assisi_-_WGA04703.jpg",
+    aliases: ["claire", "clare", "sainte claire", "sainte clare"]
   }
 ];
 
@@ -862,7 +1055,7 @@ function selectMode(m, el) {
 // ─── START ────────────────────────────────────────────────
 function startGame() {
   const countVal = document.getElementById('q-count').value;
-  const count = countVal === '20' ? SAINTS.length : parseInt(countVal);
+  const count = countVal === 'all' ? SAINTS.length : parseInt(countVal);
   questions = shuffle(SAINTS).slice(0, Math.min(count, SAINTS.length));
   currentIdx = 0;
   score = 0;
@@ -925,7 +1118,9 @@ function showHint() {
 
 // ─── OPTIONS ─────────────────────────────────────────────
 function buildOptions(correct) {
-  const others = shuffle(SAINTS.filter(s => s.name !== correct.name)).slice(0, 3);
+  const sameGender = SAINTS.filter(s => s.name !== correct.name && s.gender === correct.gender);
+  const pool = sameGender.length >= 3 ? sameGender : SAINTS.filter(s => s.name !== correct.name);
+  const others = shuffle(pool).slice(0, 3);
   const choices = shuffle([correct, ...others]);
   const grid = document.getElementById('options-grid');
   grid.innerHTML = '';
