@@ -1143,11 +1143,11 @@ function showResults() {
   document.getElementById('progress-bar').style.width = '100%';
 
   const verdicts = [
-    [90, 'Maître iconographe ! Vous seriez digne d'un scriptorium médiéval.'],
-    [70, 'Savant pèlerin ! Votre connaissance des saints force le respect.'],
-    [50, 'Bon apprenti. Encore quelques visites au musée et vous serez expert.'],
-    [30, 'Néophyte courageux. Les saints vous garderont en mémoire.'],
-    [0,  'Les tableaux n'ont pas encore livré leurs secrets. Retentez votre chance !'],
+    [90, "Maître iconographe ! Vous seriez digne d'un scriptorium médiéval."],
+    [70, "Savant pèlerin ! Votre connaissance des saints force le respect."],
+    [50, "Bon apprenti. Encore quelques visites au musée et vous serez expert."],
+    [30, "Néophyte courageux. Les saints vous garderont en mémoire."],
+    [0,  "Les tableaux n'ont pas encore livré leurs secrets. Retentez votre chance !"],
   ];
   document.getElementById('verdict-text').textContent = verdicts.find(([t]) => pct >= t)[1];
   document.getElementById('results-title').textContent = pct >= 70 ? 'Bravo !' : pct >= 40 ? 'Pas mal !' : 'Continuez !';
