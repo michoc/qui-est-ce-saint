@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qui est ce Saint ?</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+    :root {
+      --parchment: #f5e6c8;
+      --parchment-dark: #e8d5a3;
+      --ink: #2c1810;
+      --gold: #b8860b;
+      --gold-light: #d4a843;
+      --red: #8b1a1a;
+      --shadow: rgba(44,24,16,0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #1a0f08;
+      background-image:
+        radial-gradient(ellipse at 20% 20%, #2a1505 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, #1a0a00 0%, transparent 50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Crimson Text', Georgia, serif;
+      color: var(--ink);
+      padding: 20px;
+    }
+
+    #app { width: 100%; max-width: 820px; }
+
+    header {
+      text-align: center;
+      padding: 30px 20px 20px;
+    }
+
+    header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      color: var(--gold-light);
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+      letter-spacing: 3px;
+      line-height: 1.2;
+    }
+
+    header p.subtitle {
+      color: #c9a96e;
+      font-style: italic;
+      font-size: 1.1rem;
+      margin-top: 8px;
+      opacity: 0.85;
+    }
+
+    .ornament {
+      text-align: center;
+      color: var(--gold);
+      font-size: 1.4rem;
+      margin: 6px 0;
+      letter-spacing: 8px;
+      opacity: 0.7;
+    }
+
+    .card {
+      background: var(--parchment);
+      border: 3px solid var(--gold);
+      border-radius: 4px;
+      box-shadow:
+        0 0 0 1px #8b6914,
+        0 8px 32px rgba(0,0,0,0.6),
+        inset 0 0 80px rgba(184,134,11,0.08);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(184,134,11,0.4);
+      pointer-events: none;
+      border-radius: 2px;
+    }
+
+    .screen { display: none; padding: 32px 36px 36px; }
+    .screen.active { display: block; }
+
+    /* ─── START ─── */
+    #screen-start h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      color: var(--red);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    #screen-start > p {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+
+    .mode-card {
+      background: rgba(184,134,11,0.1);
+      border: 2px solid var(--gold);
+      border-radius: 4px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .mode-card:hover, .mode-card.selected {
+      background: rgba(184,134,11,0.25);
+      border-color: var(--gold-light);
+      transform: translateY(-2px);
+    }
+
+    .mode-card h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--red);
+      margin-bottom: 8px;
+    }
+
+    .mode-card p { font-size: 0.95rem; color: #5a3e2b; }
+    .mode-card .mode-icon { font-size: 2rem; display: block; margin-bottom: 10px; }
+
+    .count-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 20px 0;
+      font-family: 'Cinzel', serif;
+      color: var(--ink);
+    }
+
+    .count-row label { font-size: 1rem; }
+
+    .count-row select {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      background: var(--parchment-dark);
+      border: 2px solid var(--gold);
+      color: var(--ink);
+      padding: 6px 12px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #8b1a1a 0%, #6b1010 100%);
+      color: #f5e6c8;
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      border: 2px solid #d4a843;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    .btn:hover { background: linear-gradient(135deg, #a02020 0%, #801515 100%); transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn.secondary {
+      background: linear-gradient(135deg, #5a3e1a 0%, #3d2a10 100%);
+      font-size: 0.95rem;
+      padding: 10px 18px;
+      letter-spacing: 1px;
+    }
+
+    /* hint button — subtle, parchment-toned */
+    #btn-hint {
+      display: block;
+      width: 100%;
+      padding: 9px 16px;
+      background: transparent;
+      color: #7a5c3a;
+      font-family: 'Cinzel', serif;
+      font-size: 0.82rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border: 1px dashed rgba(184,134,11,0.5);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 16px;
+    }
+
+    #btn-hint:hover { background: rgba(184,134,11,0.08); border-color: var(--gold); color: #5a3e2b; }
+    #btn-hint:disabled { opacity: 0.35; cursor: default; }
+
+    /* ─── PROGRESS ─── */
+    #progress-bar-wrap { height: 6px; background: rgba(184,134,11,0.2); margin-bottom: 24px; }
+    #progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); transition: width 0.5s ease; }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .game-header .q-count {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+
+    .game-header .score-disp {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      color: var(--ink);
+      background: rgba(184,134,11,0.15);
+      border: 1px solid var(--gold);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* ─── PAINTING ─── */
+    .painting-wrap {
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto 24px;
+      border: 3px solid var(--gold);
+      box-shadow: 0 4px 20px var(--shadow);
+      background: #1a0f08;
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: zoom-in;
+    }
+
+    .painting-wrap img {
+      display: block;
+      width: 100%;
+      max-height: 480px;
+      object-fit: contain;
+    }
+
+    .zoom-hint {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.55);
+      color: rgba(212,168,67,0.9);
+      font-size: 0.72rem;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .painting-wrap:hover .zoom-hint { opacity: 1; }
+
+    /* ─── LIGHTBOX ─── */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+
+    #lightbox.open { display: flex; }
+
+    #lightbox img {
+      max-width: 92vw;
+      max-height: 92vh;
+      object-fit: contain;
+      box-shadow: 0 0 60px rgba(0,0,0,0.8);
+      border: 2px solid rgba(184,134,11,0.4);
+    }
+
+    #lightbox-close {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      color: var(--gold-light);
+      font-size: 2rem;
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity 0.15s;
+      background: none;
+      border: none;
+      font-family: serif;
+    }
+
+    #lightbox-close:hover { opacity: 1; }
+
+    .painting-caption {
+      text-align: center;
+      font-style: italic;
+      font-size: 0.82rem;
+      color: #7a5c3a;
+      margin-top: -4px;
+      margin-bottom: 16px;
+    }
+
+    .img-fallback {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      color: #8b6914;
+      font-style: italic;
+      font-size: 0.9rem;
+      text-align: center;
+      gap: 12px;
+    }
+
+    /* ─── HINT BOX ─── */
+    .hint-box {
+      background: rgba(139,26,26,0.06);
+      border-left: 4px solid var(--red);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      border-radius: 0 4px 4px 0;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hint-box .hint-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      color: var(--red);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .hint-box p { font-size: 1.05rem; line-height: 1.6; color: var(--ink); }
+
+    /* ─── OPTIONS ─── */
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+
+    .option-btn {
+      padding: 14px 16px;
+      background: rgba(184,134,11,0.08);
+      border: 2px solid rgba(184,134,11,0.5);
+      border-radius: 4px;
+      font-family: 'Crimson Text', serif;
+      font-size: 1.05rem;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      line-height: 1.3;
+    }
+
+    .option-btn:hover:not(:disabled) { background: rgba(184,134,11,0.2); border-color: var(--gold); transform: translateX(3px); }
+    .option-btn:disabled { cursor: default; }
+    .option-btn.correct { background: rgba(34,100,34,0.15); border-color: #2a8a2a; color: #1a5a1a; }
+    .option-btn.wrong   { background: rgba(139,26,26,0.12); border-color: var(--red); color: var(--red); text-decoration: line-through; }
+
+    /* ─── TEXT INPUT ─── */
+    .input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+
+    #text-answer {
+      flex: 1;
+      padding: 12px 16px;
+      background: rgba(184,134,11,0.08);
+      border: 2px solid rgba(184,134,11,0.5);
+      border-radius: 4px;
+      font-family: 'Crimson Text', serif;
+      font-size: 1.1rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #text-answer:focus { border-color: var(--gold); }
+    #text-answer.correct { border-color: #2a8a2a; background: rgba(34,100,34,0.1); }
+    #text-answer.wrong   { border-color: var(--red); background: rgba(139,26,26,0.1); }
+
+    #btn-submit-text {
+      padding: 12px 22px;
+      background: linear-gradient(135deg, var(--red) 0%, #6b1010 100%);
+      color: var(--parchment);
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      border: 2px solid var(--gold);
+      border-radius: 4px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    #btn-submit-text:hover:not(:disabled) { background: linear-gradient(135deg, #a02020 0%, #801515 100%); }
+    #btn-submit-text:disabled { opacity: 0.6; cursor: default; }
+
+    /* ─── REVELATION ─── */
+    #revelation {
+      display: none;
+      background: linear-gradient(135deg, rgba(139,26,26,0.07) 0%, rgba(184,134,11,0.07) 100%);
+      border: 1px solid var(--gold);
+      border-radius: 4px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
+    }
+
+    #revelation h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.25rem;
+      color: var(--red);
+      margin-bottom: 10px;
+    }
+
+    #revelation .saint-name-reveal {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    #revelation p { font-size: 1.05rem; line-height: 1.6; color: var(--ink); margin-bottom: 6px; }
+    #revelation .feast { font-family: 'Cinzel', serif; font-size: 0.85rem; color: #7a5c3a; letter-spacing: 1px; }
+
+    .result-badge {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .result-badge.win  { background: rgba(34,100,34,0.15); color: #1a5a1a; border: 1px solid #2a8a2a; }
+    .result-badge.lose { background: rgba(139,26,26,0.12); color: var(--red); border: 1px solid var(--red); }
+
+    /* ─── RESULTS ─── */
+    #screen-results { text-align: center; }
+
+    #screen-results h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: var(--red);
+      margin-bottom: 8px;
+    }
+
+    .score-circle {
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      border: 4px solid var(--gold);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      margin: 24px auto;
+      background: radial-gradient(circle, rgba(184,134,11,0.15) 0%, transparent 70%);
+      box-shadow: 0 0 30px rgba(184,134,11,0.2);
+    }
+
+    .score-circle .score-num { font-family: 'Cinzel', serif; font-size: 2.5rem; color: var(--gold-light); line-height: 1; }
+    .score-circle .score-total { font-family: 'Cinzel', serif; font-size: 1rem; color: #7a5c3a; }
+
+    .verdict { font-size: 1.15rem; font-style: italic; color: var(--ink); margin-bottom: 24px; line-height: 1.5; }
+
+    .results-list { text-align: left; margin: 20px 0; max-height: 280px; overflow-y: auto; }
+    .results-list::-webkit-scrollbar { width: 6px; }
+    .results-list::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    .result-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(184,134,11,0.2);
+      font-size: 1rem;
+    }
+
+    .result-row .rname { flex: 1; color: var(--ink); }
+
+    .results-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+
+    @media (max-width: 580px) {
+      .screen { padding: 20px 18px 24px; }
+      .mode-grid { grid-template-columns: 1fr; }
+      .options-grid { grid-template-columns: 1fr; }
+      .results-btns { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="ornament">✦ ✦ ✦</div>
+    <h1>Qui est ce Saint ?</h1>
+    <p class="subtitle">L'art médiéval et ses symboles sacrés</p>
+    <div class="ornament">✦ ✦ ✦</div>
+  </header>
+
+  <div class="card">
+    <!-- ═══ START ═══ -->
+    <div id="screen-start" class="screen active">
+      <h2>Reconnaissez-vous les saints ?</h2>
+      <p>Dans les tableaux médiévaux, chaque saint porte ses attributs propres.<br>
+         Saurez-vous les identifier à leurs symboles ?</p>
+
+      <div class="mode-grid">
+        <div class="mode-card selected" data-mode="easy" onclick="selectMode('easy', this)">
+          <span class="mode-icon">📜</span>
+          <h3>Pèlerin</h3>
+          <p>Choisissez parmi 4 saints proposés</p>
+        </div>
+        <div class="mode-card" data-mode="hard" onclick="selectMode('hard', this)">
+          <span class="mode-icon">✝️</span>
+          <h3>Érudit</h3>
+          <p>Tapez le nom du saint sans aide</p>
+        </div>
+      </div>
+
+      <div class="count-row">
+        <label for="q-count">Nombre de questions :</label>
+        <select id="q-count">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="15">15</option>
+          <option value="20">Tous</option>
+        </select>
+      </div>
+
+      <button class="btn" onclick="startGame()">Commencer la Visite</button>
+    </div>
+
+    <!-- ═══ GAME ═══ -->
+    <div id="screen-game" class="screen">
+      <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+
+      <div class="game-header">
+        <span class="q-count" id="q-count-disp"></span>
+        <span class="score-disp">Score : <span id="score-disp">0</span></span>
+      </div>
+
+      <div class="painting-wrap" onclick="openLightbox()">
+        <img id="painting" src="" alt="tableau" onerror="imgError(this)">
+        <span class="zoom-hint">⊕ Agrandir</span>
+        <div class="img-fallback" id="img-fallback">
+          <svg width="60" height="80" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="5" width="50" height="70" rx="2" stroke="#b8860b" stroke-width="2"/>
+            <circle cx="30" cy="25" r="10" stroke="#b8860b" stroke-width="1.5"/>
+            <line x1="30" y1="35" x2="30" y2="60" stroke="#b8860b" stroke-width="1.5"/>
+            <line x1="20" y1="45" x2="40" y2="45" stroke="#b8860b" stroke-width="1.5"/>
+          </svg>
+          Image non disponible
+        </div>
+      </div>
+      <p class="painting-caption" id="painting-caption"></p>
+
+      <!-- Hint (hidden until requested) -->
+      <div class="hint-box" id="hint-box" style="display:none">
+        <div class="hint-label">Indices iconographiques</div>
+        <p id="hint-text"></p>
+      </div>
+
+      <button id="btn-hint" onclick="showHint()">☩ Demander un indice</button>
+
+      <!-- Easy mode -->
+      <div id="options-wrap">
+        <div class="options-grid" id="options-grid"></div>
+      </div>
+
+      <!-- Hard mode -->
+      <div id="input-wrap" style="display:none">
+        <div class="input-row">
+          <input type="text" id="text-answer" placeholder="Nom du saint ou de la sainte…" autocomplete="off">
+          <button id="btn-submit-text" onclick="submitText()">Valider</button>
+        </div>
+        <button class="btn secondary" id="btn-skip" onclick="skipQuestion()">
+          Je ne sais pas — révéler
+        </button>
+      </div>
+
+      <!-- Revelation -->
+      <div id="revelation">
+        <span class="result-badge" id="result-badge"></span>
+        <h3>
+          <span id="reveal-correct"></span>
+          <span class="saint-name-reveal" id="reveal-name"></span>
+        </h3>
+        <p id="reveal-story"></p>
+        <p class="feast" id="reveal-feast"></p>
+        <p class="painting-caption" id="reveal-artwork" style="margin-top:8px"></p>
+      </div>
+
+      <button class="btn" id="btn-next" onclick="nextQuestion()" style="display:none">
+        Question suivante →
+      </button>
+    </div>
+
+    <!-- ═══ RESULTS ═══ -->
+    <div id="screen-results" class="screen">
+      <h2 id="results-title"></h2>
+      <div class="score-circle">
+        <span class="score-num" id="final-score"></span>
+        <span class="score-total" id="final-total"></span>
+      </div>
+      <p class="verdict" id="verdict-text"></p>
+      <div class="results-list" id="results-list"></div>
+      <div class="results-btns">
+        <button class="btn" onclick="startGame()">Rejouer</button>
+        <button class="btn secondary" onclick="showStart()">Menu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SAINTS = [
+  {
+    name: "Saint Sébastien",
+    hint: "Jeune homme nu, le corps transpercé de nombreuses flèches, attaché à un arbre ou un poteau. Soldats armés autour de lui.",
+    story: "Officier de la garde impériale romaine, martyrisé sous Dioclétien (vers 288) pour avoir converti des prisonniers au christianisme. Laissé pour mort, il survécut à ses flèches avant d'être achevé à coups de massue. Patron des soldats et invoqué contre la peste.",
+    feast: "Fête le 20 janvier",
+    artwork: "Andrea Mantegna, vers 1480 — Musée du Louvre, Paris",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Saint_Sebastian_by_Mantegna_%28Louvre%29.jpg/500px-Saint_Sebastian_by_Mantegna_%28Louvre%29.jpg",
+    aliases: ["sébastien", "sebastien", "saint sébastien", "saint sebastien"]
+  },
+  {
+    name: "Sainte Cécile",
+    hint: "Jeune femme entourée d'instruments de musique — orgue, luth, viole. Son regard est souvent levé vers le ciel, dans l'extase du chant.",
+    story: "Noble romaine du IIIe siècle, martyrisée à Syracuse. Lors de ses noces, elle entendait en son cœur la musique des anges. Patronne des musiciens, compositeurs et chanteurs.",
+    feast: "Fête le 22 novembre",
+    artwork: "Raphaël, 1514–1516 — Pinacoteca Nazionale, Bologne",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Raphael_St_Cecilia.jpg/500px-Raphael_St_Cecilia.jpg",
+    aliases: ["cécile", "cecile", "sainte cécile", "sainte cecile"]
+  },
+  {
+    name: "Sainte Agnès",
+    hint: "Jeune vierge tenant un agneau dans ses bras ou à ses côtés. Souvent couronnée de fleurs et portant une palme du martyre.",
+    story: "Jeune romaine de 12 ans martyrisée vers 304. Elle refusa d'épouser le fils d'un préfet romain, affirmant que le Christ était son époux. Son nom latin (Agnus = agneau) inspira cet attribut. Patronne des jeunes filles et de la pureté.",
+    feast: "Fête le 21 janvier",
+    artwork: "Vicente Macip, vers 1540 — Musée du Prado, Madrid",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Macip-santa_ines.jpg/500px-Macip-santa_ines.jpg",
+    aliases: ["agnès", "agnes", "sainte agnès", "sainte agnes"]
+  },
+  {
+    name: "Saint Georges",
+    hint: "Chevalier en armure terrassant un dragon avec sa lance. Une princesse en robe blanche est souvent représentée en retrait.",
+    story: "Soldat romain de Cappadoce martyrisé vers 303. La légende du dragon, popularisée par la Légende dorée (XIIIe s.), en fait le libérateur d'une cité terrorisée par un monstre. Patron de l'Angleterre, de la chevalerie et des soldats.",
+    feast: "Fête le 23 avril",
+    artwork: "Paolo Uccello, vers 1470 — National Gallery, Londres",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Saint_George_and_the_Dragon_by_Paolo_Uccello_%28London%29_01.jpg/500px-Saint_George_and_the_Dragon_by_Paolo_Uccello_%28London%29_01.jpg",
+    aliases: ["georges", "saint georges", "george", "saint george"]
+  },
+  {
+    name: "Saint Jérôme",
+    hint: "Vieillard barbu dans un désert ou une grotte, souvent à demi nu. Un lion docile est à ses côtés, et un crâne lui rappelle la mort.",
+    story: "Père de l'Église (347–420), auteur de la Vulgate, traduction latine de la Bible. Il vécut comme ermite en Syrie et en Palestine. La légende dit qu'il soigna un lion blessé qui devint son fidèle compagnon. Patron des traducteurs et des bibliothécaires.",
+    feast: "Fête le 30 septembre",
+    artwork: "Albrecht Dürer, vers 1496 — National Gallery, Londres",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Albrecht_D%C3%BCrer_012.jpg/500px-Albrecht_D%C3%BCrer_012.jpg",
+    aliases: ["jérôme", "jerome", "saint jérôme", "saint jerome"]
+  },
+  {
+    name: "Sainte Marie-Madeleine",
+    hint: "Femme aux longs cheveux dénoués, tenant un vase d'onguent (alabastre). Elle pleure souvent au pied de la Croix ou dans un cadre de pénitente.",
+    story: "Figure centrale des Évangiles, présente à la Crucifixion et première témoin de la Résurrection. Sa longue chevelure et son pot d'huile parfumée restent ses attributs immuables.",
+    feast: "Fête le 22 juillet",
+    artwork: "Georges de La Tour, vers 1640 — Metropolitan Museum, New York",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Georges_de_La_Tour_006.jpg/500px-Georges_de_La_Tour_006.jpg",
+    aliases: ["marie-madeleine", "marie madeleine", "madeleine", "sainte marie-madeleine", "sainte madeleine"]
+  },
+  {
+    name: "Saint Jean-Baptiste",
+    hint: "Ascète vêtu d'une peau de chameau, tenant une croix de roseau et un agneau ou un livre. Il montre souvent du doigt.",
+    story: "Le précurseur du Christ, qui le baptisa dans le Jourdain. Fils d'Élisabeth et de Zacharie, il vécut en ermite dans le désert de Judée. Décapité sur ordre d'Hérode Antipas à la demande de Salomé.",
+    feast: "Fête le 24 juin",
+    artwork: "Leonardo da Vinci, vers 1516 — Musée du Louvre, Paris",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Leonardo_da_Vinci_-_Saint_John_the_Baptist_C2RMF_retouched.jpg/500px-Leonardo_da_Vinci_-_Saint_John_the_Baptist_C2RMF_retouched.jpg",
+    aliases: ["jean-baptiste", "jean baptiste", "saint jean-baptiste", "saint jean baptiste"]
+  },
+  {
+    name: "Saint Pierre",
+    hint: "Homme d'âge mûr aux cheveux courts et bouclés, portant deux clefs (une d'or, une d'argent). Chef des apôtres.",
+    story: "Pêcheur de Galilée appelé Simon, renommé Pierre (Petros = le roc) par Jésus. Martyrisé à Rome vers 64, il aurait demandé à être crucifié la tête en bas, ne se jugeant pas digne de mourir comme le Christ. Ses deux clefs symbolisent les pouvoirs spirituel et terrestre.",
+    feast: "Fête le 29 juin",
+    artwork: "El Greco, vers 1610 — WGA",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/El_Greco_-_Saint_Peter_-_WGA10621.jpg/500px-El_Greco_-_Saint_Peter_-_WGA10621.jpg",
+    aliases: ["pierre", "saint pierre", "peter", "saint peter"]
+  },
+  {
+    name: "Sainte Catherine d'Alexandrie",
+    hint: "Jeune femme noble tenant une épée et une roue brisée — instrument de son supplice. Couronne royale sur la tête.",
+    story: "Noble d'Alexandrie (IVe s.) qui aurait converti 50 philosophes envoyés par Maxence pour la faire renoncer à sa foi. Condamnée à la roue, qui se brisa miraculeusement, elle fut décapitée. Patronne des philosophes et des étudiants.",
+    feast: "Fête le 25 novembre",
+    artwork: "Caravage, vers 1598 — Museo Thyssen-Bornemisza, Madrid",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Saint_Catherine_of_Alexandria_%28Caravaggio%29.jpg/500px-Saint_Catherine_of_Alexandria_%28Caravaggio%29.jpg",
+    aliases: ["catherine", "catherine d'alexandrie", "sainte catherine", "sainte catherine d'alexandrie"]
+  },
+  {
+    name: "Sainte Barbe",
+    hint: "Jeune femme élégante tenant une palme et portant une tour à trois fenêtres (symbole trinitaire) — souvent derrière elle ou à ses pieds.",
+    story: "Vierge martyre du IIIe s. dont le père la fit décapiter de sa propre main après l'avoir enfermée dans une tour. La tour à trois fenêtres rappelle le mystère de la Trinité. Patronne des artilleurs et protectrice contre la foudre.",
+    feast: "Fête le 4 décembre",
+    artwork: "Jan van Eyck, 1437 — KMSKA, Anvers",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Saint_Barbara_of_Nicodemia_-_Jan_van_Eyck_-_1437.jpg/500px-Saint_Barbara_of_Nicodemia_-_Jan_van_Eyck_-_1437.jpg",
+    aliases: ["barbe", "sainte barbe", "barbara", "sainte barbara"]
+  },
+  {
+    name: "Sainte Lucie",
+    hint: "Jeune martyre tenant une palme et un plateau sur lequel reposent deux yeux. Parfois une lampe ou un livre.",
+    story: "Jeune sicilienne martyrisée sous Dioclétien (304). Selon la légende, elle s'arracha les yeux pour les offrir à un prétendant qui l'admirait pour son regard. Ses yeux lui furent miraculeusement rendus. Patronne des aveugles.",
+    feast: "Fête le 13 décembre",
+    artwork: "Domenico Veneziano, vers 1445 — Galerie des Offices, Florence",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Domenico_Veneziano_-_Pala_di_Santa_Lucia_dei_Magnoli_-_Google_Art_Project.jpg/500px-Domenico_Veneziano_-_Pala_di_Santa_Lucia_dei_Magnoli_-_Google_Art_Project.jpg",
+    aliases: ["lucie", "lucia", "sainte lucie", "sainte lucia", "lucy"]
+  },
+  {
+    name: "Saint François d'Assise",
+    hint: "Moine en habit brun grossier, portant les stigmates (plaies du Christ). Il est souvent entouré d'oiseaux et tient une croix ou un livre.",
+    story: "Fils d'un riche marchand d'Assise (1181–1226), il abandonna tout pour vivre en pauvreté absolue. En 1224, il reçut les stigmates — les cinq plaies du Christ — sur son corps. Fondateur de l'ordre franciscain. Patron des animaux.",
+    feast: "Fête le 4 octobre",
+    artwork: "El Greco, vers 1595 — Musée du Prado, Madrid",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/El_Greco_-_Saint_Francis_Receiving_the_Stigmata_-_Google_Art_Project.jpg/500px-El_Greco_-_Saint_Francis_Receiving_the_Stigmata_-_Google_Art_Project.jpg",
+    aliases: ["françois", "francois", "francis", "saint françois", "saint francois", "saint francis", "François d'assise"]
+  },
+  {
+    name: "Saint Laurent",
+    hint: "Diacre vêtu d'une dalmatique, portant un gril (grille de métal) — instrument de son martyre. Parfois une palme ou une aumônière.",
+    story: "Diacre de Rome martyrisé en 258. Chargé des trésors de l'Église, il les distribua aux pauvres avant d'être arrêté. Condamné à être brûlé vif sur un gril, il aurait dit : « Retournez-moi, je suis cuit d'un côté. » Patron des bibliothécaires.",
+    feast: "Fête le 10 août",
+    artwork: "Fra Angelico, vers 1448 — Chapelle Nicolina, Vatican",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Fra_Angelico_-_Martyrdom_of_St_Lawrence_-_WGA00598.jpg/500px-Fra_Angelico_-_Martyrdom_of_St_Lawrence_-_WGA00598.jpg",
+    aliases: ["laurent", "lawrence", "saint laurent", "saint lawrence"]
+  },
+  {
+    name: "Saint Nicolas",
+    hint: "Évêque mitré en habits liturgiques, portant trois boules d'or (ou trois bourses) et parfois un tonneau contenant trois enfants.",
+    story: "Évêque de Myre (IVe s.), célèbre pour sa générosité. Il aurait sauvé trois jeunes filles de la misère en leur offrant une dot (les trois bourses d'or). Devenu le Père Noël en traversant l'Atlantique. Patron des enfants et des marins.",
+    feast: "Fête le 6 décembre",
+    artwork: "Gentile da Fabriano, 1425 — Galerie des Offices, Florence",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Gentile_da_Fabriano%2C_Saint_Nicholas%2C_detail_%28Polittico_Quaratesi%29%2C_1425%2C_Uffizi.jpg/500px-Gentile_da_Fabriano%2C_Saint_Nicholas%2C_detail_%28Polittico_Quaratesi%29%2C_1425%2C_Uffizi.jpg",
+    aliases: ["nicolas", "nicholas", "saint nicolas", "saint nicholas"]
+  },
+  {
+    name: "Saint Christophe",
+    hint: "Géant traversant un fleuve à pied, portant sur ses épaules l'enfant Jésus qui tient un globe terrestre. Un bâton de palmier à la main.",
+    story: "Selon la légende, ce géant cherchait le plus puissant maître à servir. Un enfant qu'il portait devint de plus en plus lourd — c'était le Christ portant le poids du monde. Son nom signifie « porte-Christ ». Patron des voyageurs.",
+    feast: "Fête le 25 juillet",
+    artwork: "Hieronymus Bosch, vers 1504 — Museum Boijmans, Rotterdam",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Jheronimus_Bosch_-_Saint_Christopher_-_Google_Art_Project.jpg/500px-Jheronimus_Bosch_-_Saint_Christopher_-_Google_Art_Project.jpg",
+    aliases: ["christophe", "christopher", "saint christophe", "saint christopher"]
+  },
+  {
+    name: "Saint Antoine de Padoue",
+    hint: "Moine franciscain portant dans ses bras l'Enfant Jésus et un lys blanc. Livre ouvert dans l'autre main.",
+    story: "Franciscain portugais (1195–1231), docteur de l'Église réputé pour ses miracles. La vision de l'Enfant Jésus lui apparaissant dans ses bras est l'image la plus populaire. Il convertit un mulet hérétique qui s'inclina devant l'Eucharistie. Patron des objets perdus.",
+    feast: "Fête le 13 juin",
+    artwork: "Bartolomé Esteban Murillo — Birmingham Museums Trust",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Bartolom%C3%A9_Esteban_Murillo_%281617-1682%29_-_The_Vision_of_Saint_Anthony_of_Padua_-_1974P24_-_Birmingham_Museums_Trust.jpg/500px-Bartolom%C3%A9_Esteban_Murillo_%281617-1682%29_-_The_Vision_of_Saint_Anthony_of_Padua_-_1974P24_-_Birmingham_Museums_Trust.jpg",
+    aliases: ["antoine", "anthony", "antoine de padoue", "saint antoine", "saint antoine de padoue"]
+  },
+  {
+    name: "Saint André",
+    hint: "Vieil apôtre aux cheveux blancs enlacé à une grande croix en X (croix de Saint-André / croix décussée).",
+    story: "Frère de Pierre, pêcheur du lac de Tibériade, premier appelé par Jésus. Martyrisé à Patras (Grèce) sur une croix en X — il aurait demandé cette croix différente pour ne pas être comparé au Christ. Patron de l'Écosse et de la Russie.",
+    feast: "Fête le 30 novembre",
+    artwork: "Jusepe de Ribera — Museum of Fine Arts, Boston",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Jusepe_de_Ribera_-_Saint_Andrew_-_1991.776_-_Museum_of_Fine_Arts.jpg/500px-Jusepe_de_Ribera_-_Saint_Andrew_-_1991.776_-_Museum_of_Fine_Arts.jpg",
+    aliases: ["andré", "andrew", "saint andré", "saint andrew"]
+  },
+  {
+    name: "Saint Barthélemy",
+    hint: "Apôtre tenant sa propre peau écorchée sur le bras ou à la main, ainsi qu'un couteau de boucher.",
+    story: "Un des douze apôtres, martyrisé en Arménie où il aurait été écorché vif puis décapité. Michel-Ange s'est représenté lui-même dans la peau flasque que tient saint Barthélemy dans le Jugement Dernier de la Sixtine. Patron des bouchers.",
+    feast: "Fête le 24 août",
+    artwork: "José de Ribera — Musée du Prado, Madrid",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Ribera_-_San_Bartolom%C3%A9%2C_P001099.jpg/500px-Ribera_-_San_Bartolom%C3%A9%2C_P001099.jpg",
+    aliases: ["barthélemy", "barthelemy", "bartholomew", "saint barthélemy", "saint barthelemy"]
+  },
+  {
+    name: "Sainte Thérèse d'Avila",
+    hint: "Carmélite en habit brun et blanc, souvent en extase, traversée d'une flèche de feu envoyée par un ange. Plume et livre à ses côtés.",
+    story: "Mystique espagnole (1515–1582), réformatrice du Carmel. Ses écrits décrivent ses extases spirituelles, notamment la transverbération — un ange lui transperçant le cœur d'une flèche enflammée. Docteure de l'Église.",
+    feast: "Fête le 15 octobre",
+    artwork: "Gian Lorenzo Bernini, 1647–1652 — Santa Maria della Vittoria, Rome",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Ecstasy_of_Saint_Teresa.JPG/500px-Ecstasy_of_Saint_Teresa.JPG",
+    aliases: ["thérèse", "therese", "thérèse d'avila", "therese d'avila", "sainte thérèse", "sainte therese"]
+  },
+  {
+    name: "Saint Thomas",
+    hint: "Apôtre portant une équerre d'architecte ou introduisant son doigt dans la plaie du Christ ressuscité.",
+    story: "L'apôtre du doute : refusant de croire à la Résurrection, il demanda à toucher les plaies du Christ. La scène de l'« Incrédulité de Saint Thomas » est une des plus représentées de l'art baroque. Il aurait évangélisé l'Inde. Patron des architectes.",
+    feast: "Fête le 3 juillet",
+    artwork: "Caravage, 1601–1602 — Sanssouci, Potsdam",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Caravaggio_-_The_Incredulity_of_Saint_Thomas.jpg/500px-Caravaggio_-_The_Incredulity_of_Saint_Thomas.jpg",
+    aliases: ["thomas", "saint thomas"]
+  }
+];
+
+// ─── STATE ────────────────────────────────────────────────
+let mode = 'easy';
+let questions = [];
+let currentIdx = 0;
+let score = 0;
+let answered = false;
+let gameHistory = [];
+
+// ─── UTILS ───────────────────────────────────────────────
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function normalize(str) {
+  return str.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/saint[e]?\s+/g, "").trim();
+}
+
+function isCorrect(guess, saint) {
+  const g = normalize(guess);
+  return [saint.name, ...saint.aliases].map(normalize).some(t => t === g || (t.includes(g) && g.length > 3));
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showStart() { showScreen('screen-start'); }
+
+function selectMode(m, el) {
+  mode = m;
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ─── START ────────────────────────────────────────────────
+function startGame() {
+  const countVal = document.getElementById('q-count').value;
+  const count = countVal === '20' ? SAINTS.length : parseInt(countVal);
+  questions = shuffle(SAINTS).slice(0, Math.min(count, SAINTS.length));
+  currentIdx = 0;
+  score = 0;
+  gameHistory = [];
+  showScreen('screen-game');
+  showQuestion();
+}
+
+// ─── SHOW QUESTION ────────────────────────────────────────
+function showQuestion() {
+  answered = false;
+  const saint = questions[currentIdx];
+  const total = questions.length;
+
+  document.getElementById('progress-bar').style.width = (currentIdx / total * 100) + '%';
+  document.getElementById('q-count-disp').textContent = `Question ${currentIdx + 1} / ${total}`;
+  document.getElementById('score-disp').textContent = score;
+
+  const img = document.getElementById('painting');
+  img.style.display = 'block';
+  document.getElementById('img-fallback').style.display = 'none';
+  img.src = saint.image;
+  document.getElementById('painting-caption').textContent = saint.artwork;
+
+  // Hide hint, re-enable hint button
+  document.getElementById('hint-text').textContent = saint.hint;
+  document.getElementById('hint-box').style.display = 'none';
+  const btnHint = document.getElementById('btn-hint');
+  btnHint.style.display = 'block';
+  btnHint.disabled = false;
+  btnHint.textContent = '☩ Demander un indice';
+
+  document.getElementById('revelation').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'none';
+
+  if (mode === 'easy') {
+    document.getElementById('options-wrap').style.display = 'block';
+    document.getElementById('input-wrap').style.display = 'none';
+    buildOptions(saint);
+  } else {
+    document.getElementById('options-wrap').style.display = 'none';
+    document.getElementById('input-wrap').style.display = 'block';
+    const inp = document.getElementById('text-answer');
+    inp.value = '';
+    inp.className = '';
+    inp.disabled = false;
+    document.getElementById('btn-submit-text').disabled = false;
+    document.getElementById('btn-skip').style.display = 'block';
+    inp.focus();
+  }
+}
+
+// ─── HINT ─────────────────────────────────────────────────
+function showHint() {
+  document.getElementById('hint-box').style.display = 'block';
+  const btn = document.getElementById('btn-hint');
+  btn.disabled = true;
+  btn.textContent = '☩ Indice révélé';
+}
+
+// ─── OPTIONS ─────────────────────────────────────────────
+function buildOptions(correct) {
+  const others = shuffle(SAINTS.filter(s => s.name !== correct.name)).slice(0, 3);
+  const choices = shuffle([correct, ...others]);
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+  choices.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = s.name;
+    btn.onclick = () => selectOption(s, correct, btn);
+    grid.appendChild(btn);
+  });
+}
+
+function selectOption(chosen, correct, btn) {
+  if (answered) return;
+  answered = true;
+  document.querySelectorAll('.option-btn').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === correct.name) b.classList.add('correct');
+  });
+  const win = chosen.name === correct.name;
+  if (!win) btn.classList.add('wrong');
+  if (win) score++;
+  gameHistory.push({ saint: correct, win });
+  revealSaint(correct, win);
+}
+
+// ─── TEXT MODE ────────────────────────────────────────────
+function submitText() {
+  if (answered) return;
+  const val = document.getElementById('text-answer').value.trim();
+  if (!val) return;
+  const saint = questions[currentIdx];
+  answered = true;
+  const win = isCorrect(val, saint);
+  const inp = document.getElementById('text-answer');
+  inp.classList.add(win ? 'correct' : 'wrong');
+  inp.disabled = true;
+  document.getElementById('btn-submit-text').disabled = true;
+  document.getElementById('btn-skip').style.display = 'none';
+  if (win) score++;
+  gameHistory.push({ saint, win });
+  revealSaint(saint, win);
+}
+
+function skipQuestion() {
+  if (answered) return;
+  answered = true;
+  const saint = questions[currentIdx];
+  document.getElementById('text-answer').disabled = true;
+  document.getElementById('btn-submit-text').disabled = true;
+  document.getElementById('btn-skip').style.display = 'none';
+  gameHistory.push({ saint, win: false });
+  revealSaint(saint, false);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('text-answer').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !answered) submitText();
+  });
+});
+
+// ─── REVEAL ──────────────────────────────────────────────
+function revealSaint(saint, win) {
+  // Hide hint button once answered
+  document.getElementById('btn-hint').style.display = 'none';
+  // Show hint automatically in the reveal
+  document.getElementById('hint-box').style.display = 'none';
+
+  const rev = document.getElementById('revelation');
+  rev.style.display = 'block';
+
+  const badge = document.getElementById('result-badge');
+  badge.textContent = win ? '✓ Exact !' : '✗ Raté';
+  badge.className = 'result-badge ' + (win ? 'win' : 'lose');
+
+  document.getElementById('reveal-correct').textContent = win ? '' : 'La réponse était : ';
+  document.getElementById('reveal-name').textContent = saint.name;
+  document.getElementById('reveal-story').textContent = saint.story;
+  document.getElementById('reveal-feast').textContent = saint.feast;
+  document.getElementById('reveal-artwork').textContent = saint.artwork;
+
+  const btnNext = document.getElementById('btn-next');
+  btnNext.style.display = 'block';
+  btnNext.textContent = currentIdx + 1 < questions.length ? 'Question suivante →' : 'Voir les résultats';
+}
+
+// ─── NEXT ─────────────────────────────────────────────────
+function nextQuestion() {
+  currentIdx++;
+  if (currentIdx >= questions.length) showResults();
+  else showQuestion();
+}
+
+// ─── RESULTS ─────────────────────────────────────────────
+function showResults() {
+  showScreen('screen-results');
+  const total = questions.length;
+  const pct = Math.round(score / total * 100);
+
+  document.getElementById('final-score').textContent = score;
+  document.getElementById('final-total').textContent = `/ ${total}`;
+  document.getElementById('progress-bar').style.width = '100%';
+
+  const verdicts = [
+    [90, 'Maître iconographe ! Vous seriez digne d\'un scriptorium médiéval.'],
+    [70, 'Savant pèlerin ! Votre connaissance des saints force le respect.'],
+    [50, 'Bon apprenti. Encore quelques visites au musée et vous serez expert.'],
+    [30, 'Néophyte courageux. Les saints vous garderont en mémoire.'],
+    [0,  'Les tableaux n\'ont pas encore livré leurs secrets. Retentez votre chance !'],
+  ];
+  document.getElementById('verdict-text').textContent = verdicts.find(([t]) => pct >= t)[1];
+  document.getElementById('results-title').textContent = pct >= 70 ? 'Bravo !' : pct >= 40 ? 'Pas mal !' : 'Continuez !';
+
+  const list = document.getElementById('results-list');
+  list.innerHTML = '';
+  gameHistory.forEach(({ saint, win }) => {
+    const row = document.createElement('div');
+    row.className = 'result-row';
+    row.innerHTML = `<span>${win ? '✓' : '✗'}</span><span class="rname">${saint.name}</span>`;
+    list.appendChild(row);
+  });
+}
+
+// ─── IMAGE ERROR ──────────────────────────────────────────
+function imgError(img) {
+  img.style.display = 'none';
+  document.getElementById('img-fallback').style.display = 'flex';
+}
+
+// ─── LIGHTBOX ─────────────────────────────────────────────
+function openLightbox() {
+  const src = document.getElementById('painting').src;
+  if (!src || document.getElementById('img-fallback').style.display === 'flex') return;
+  document.getElementById('lightbox-img').src = src.replace('/500px-', '/1280px-');
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="tableau agrandi">
+</div>
+
+</body>
+</html>
